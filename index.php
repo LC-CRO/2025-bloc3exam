@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include("config.php");
-include("header.php");
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 

@@ -18,7 +18,7 @@
         <!-- Ajoutez d'autres champs à mettre à jour ici -->
         <button type="submit">Enregistrer les Modifications</button>
     </form>
-   <button onclick="window.location.href ='profile.php'">Retour au Profil</a>
-    <button onclick="window.location.href ='index.php'">Retour à l'accueil</a>
+   <button onclick="window.location.href ='profile.php'">Retour au Profil</button>
+    <button onclick="window.location.href ='index.php'">Retour à l'accueil</button>
 </body>
 </html>
