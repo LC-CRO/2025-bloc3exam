@@ -1,5 +1,6 @@
 <?php
 require('config.php');
+require('security_header.php');
 
 if (isset($_GET['id'])) {
     $bookId = intval($_GET['id']); // Sécurisation de l'ID reçu via GET
@@ -80,7 +81,7 @@ if (isset($_GET['id'])) {
 
 
         <?php if (isset($book) && $book['statut'] === 'disponible') : ?>
-            <form method="POST" action="borrow_book.php" style="display: inline-block;">
+            <form method="POST" action="borrow_book.php" s>
                 <input type="hidden" name="book_id" value="<?= $bookId; ?>">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <button type="submit" class="borrow-button">Emprunter ce livre</button>

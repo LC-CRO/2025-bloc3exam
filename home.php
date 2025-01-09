@@ -51,7 +51,7 @@ $lateCount = $resultLateBorrowings['late_count'];
     <nav id="sidebar">
         <ul>
             <?php if (isset($_SESSION['user'])) : ?>
-                <li>Bonjour <?= htmlspecialchars($_SESSION['prenom']); ?></li>
+                <li>Bonjour <?= htmlspecialchars($_SESSION['prenom']);  ?> <?= htmlspecialchars($_SESSION['nom']);  ?></li>
                 <li><a href="books.php">Voir la liste des livres</a></li>
                 <li><a href="profile.php">Mon profil</a></li>
                 <li><a href="view_borrowings.php">Voir mes emprunts</a></li>

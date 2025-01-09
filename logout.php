@@ -7,8 +7,8 @@ if (!isset($_SESSION['attempts'][$_SERVER['REMOTE_ADDR']]['blocked_until']) ||
     // Si la session n'existe pas ou si l'utilisateur n'est pas bloqué
     session_unset();  // Supprimer toutes les variables de session
     session_destroy();  // Détruire la session
-    exit();
 }
 
-header('Location: login.php');
+header('Location: index.php');
+exit();
 ?>

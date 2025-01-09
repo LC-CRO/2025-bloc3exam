@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="post" action="">
         <input type="text" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <button type="submit">Se connecter</button>
         <p>Vous n'avez pas de compte ? <a href="register.php">S'inscrire</a></p>
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
