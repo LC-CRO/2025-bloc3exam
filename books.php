@@ -85,6 +85,7 @@
         <!-- Affichage des livres depuis la base de données -->
         <?php
         require('config.php');
+        require('security_header.php');
 
         $query = "SELECT * FROM livres";
         $stmt = $pdo->query($query);

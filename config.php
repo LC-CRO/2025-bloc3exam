@@ -1,13 +1,13 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
+require_once __DIR__. '/env.php';
+loadEnv(__DIR__ . '/.env');
 
 
-$host = '51.254.109.35:3306';
-$dbname = 's6649_bloc3';
-$username = 'u6649_Ysi98rp29W';
-$password = 'Ndx273b8QNGBE5sj=Ru=EGEA';
+$host = $_ENV['DB_HOST'] ?? '';
+$dbname = $_ENV['DB_NAME'] ?? '';
+$username = $_ENV['DB_USER'] ?? '';
+$password = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
