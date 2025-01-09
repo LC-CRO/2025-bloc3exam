@@ -1,3 +1,11 @@
+<?php
+
+require('security_header.php');
+require('security_user.php');
+require('security_csrf.php');
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +24,7 @@
         <input type="email" name="new_email" required>
         <br>
         <!-- Ajoutez d'autres champs à mettre à jour ici -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <button type="submit">Enregistrer les Modifications</button>
     </form>
    <button onclick="window.location.href ='profile.php'">Retour au Profil</button>

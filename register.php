@@ -1,5 +1,7 @@
 <?php
 require('config.php');
+require('security_header.php');
+require('security_csrf.php');
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute(array(':email' => $email));
 
     if ($stmt->rowCount() > 0) {
-        $error = "Cet email est déjà utilisé.";
+       $_SESSION['errors'][] = "Cet email est déjà utilisé.";
     } else {
         // Hasher le mot de passe
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -29,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redirection vers la page de connexion
             header('Location: login.php');
         } else {
-            $error = "Erreur lors de l'inscription.";
+           $_SESSION['errors'][] = "Erreur lors de l'inscription.";
         }
     }
 }
@@ -50,10 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="text" name="prenom" placeholder="Prenom" required>
         <input type="text" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <button type="submit">S'inscrire</button>
     </form>
 
-    <?php if (isset($error)) { echo "<p>$error</p>"; } ?>
+    <?php require('security_errors.php'); ?>
     <p>Vous avez déjà un compte ? <a href="login.php">Connectez-vous ici</a>.</p>
 </body>
 </html>

@@ -106,3 +106,15 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+CREATE TABLE emprunts (
+    id_emprunt INT AUTO_INCREMENT PRIMARY KEY,  -- Identifiant unique de l'emprunt
+    id_utilisateur INT NOT NULL,                -- Référence à l'utilisateur qui emprunte
+ id_livre INT NOT NULL,                      -- Référence au livre emprunté
+ date_emprunt DATE NOT NULL,                 -- Date de début de l'emprunt
+ date_retour_prevue DATE NOT NULL,           -- Date prévue pour le retour du livre
+ date_retour_effective DATE DEFAULT NULL,    -- Date effective de retour du livre (null si pas encore retourné)
+    CONSTRAINT fk_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    CONSTRAINT fk_livre FOREIGN KEY (id_livre) REFERENCES livres(id) ON DELETE CASCADE
+);

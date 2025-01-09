@@ -1,14 +1,10 @@
 <?php
 require('config.php');
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
-// Vérifiez si l'utilisateur est authentifié et a le rôle approprié (par exemple, "admin" ou "gestionnaire") pour accéder à cette fonctionnalité.
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
-    exit();
-}
+require('security_header.php');
+require('security_user.php');
+require('security_admin.php');
+require('security_csrf.php');
 
 // Assurez-vous que l'ID du livre que vous souhaitez modifier est passé en tant que paramètre (par exemple, dans l'URL).
 if (!isset($_GET['book_id'])) {
@@ -82,8 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="cover_url">URL de l'image :</label>
         <input type="text" name="cover_url" value="<?= htmlspecialchars($book['photo_url']); ?>" required>
         <br>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <button type="submit">Enregistrer les Modifications</button>
     </form>
-    <button onclick="window.location.href ='books.php'">Retour à la Liste des Livres</a>
+<button onclick="window.location.href ='books.php'">Retour à la Liste des Livres</button>
 </body>
 </html>

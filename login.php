@@ -1,29 +1,46 @@
 <?php
 require('config.php');
+require('security_header.php');
+require('security_csrf.php');
+require('security_auth_attempts.php');
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    // Validation de l'email pour éviter des formats incorrects
+    $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+    $password = trim($_POST['password']); // Suppression des espaces superflus
 
-    // Requête pour récupérer l'utilisateur par son email
-    $query = "SELECT id, mot_de_passe, prenom, role FROM utilisateurs WHERE email = :email";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute(array(':email' => $email));
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($password, $user['mot_de_passe'])) {
-        // Mot de passe correct, connecter l'utilisateur
-        session_start();
-        $_SESSION['user'] = $email;
-        $_SESSION['prenom'] = $user['prenom'];
-        $_SESSION['role'] = $user['role'];
-        $_SESSION['user_id'] = $user['id'];
-        header('Location: index.php'); // Rediriger vers la page d'accueil
+    // Vérification que l'email est bien un format valide
+    if (!$email || empty($password)) {
+       $_SESSION['errors'][] = "Veuillez remplir tous les champs correctement.";
     } else {
-        $error = "Email ou mot de passe incorrect";
+        // Préparation de la requête SQL sécurisée pour récupérer l'utilisateur correspondant à l'email
+        $query = "SELECT id, mot_de_passe, prenom, role FROM utilisateurs WHERE email = :email";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch();
+
+        // Si un utilisateur est trouvé et que le mot de passe est vérifié
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
+            // Regénération de l'ID de session pour prévenir les attaques de fixation de session
+            session_regenerate_id(true);
+
+            // Stockage des informations de l'utilisateur dans la session
+            $_SESSION['user'] = $email;
+            $_SESSION['prenom'] = $user['prenom'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['created'] = time(); // Ajout du timestamp pour la durée de session
+
+            // Redirection vers la page d'accueil après une connexion réussie
+            header('Location: index.php');
+            exit;
+        } else {
+            require('security_auth_failed.php');
+        }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -39,9 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <form method="post" action="">
         <input type="text" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <button type="submit">Se connecter</button>
         <p>Vous n'avez pas de compte ? <a href="register.php">S'inscrire</a></p>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
     </form>
-    <?php if (isset($error)) { echo "<p>$error</p>"; } ?>
+    <?php require('security_errors.php'); ?>
 </body>
 </html>

@@ -4,16 +4,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require('config.php');
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require('security_header.php');
+require('security_user.php');
+require('security_csrf.php');
+require('security_admin.php');
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
-    exit();
-}
-
-$errors = [];
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -27,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Effectuez des validations (assurez-vous que les données sont correctes)
     if (empty($title)) {
-        $errors[] = "Le titre du livre est requis.";
+        $_SESSION['errors'][] =  "Le titre du livre est requis.";
     }
     if (empty($date_publication)) {
-        $errors[] = "La date de publication est requise.";
+        $_SESSION['errors'][] =  "La date de publication est requise.";
     }
     if (empty($isbn)) {
-        $errors[] = "ISBN est requis.";
+        $_SESSION['errors'][] =  "ISBN est requis.";
     }
     // Ajoutez d'autres validations ici...
 
@@ -72,13 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p>Le livre a été ajouté avec succès.</p>
         <button onclick="window.location.href = 'books.php'">Retour à la gestion des livres </button>
     <?php else : ?>
-        <?php if (!empty($errors)) : ?>
-            <ul>
-                <?php foreach ($errors as $error) : ?>
-                    <li><?= $error ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+        <?php require('security_errors.php'); ?>
 
         <form method="post">
             <label for="cover">URL de l'image :</label>
@@ -98,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="isbn">ISBN :</label>
             <input type="text" name="isbn" required>
             <br>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
             <button type="submit">Ajouter le Livre</button>
         </form>
     <?php endif; ?>

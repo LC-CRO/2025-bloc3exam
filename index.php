@@ -1,14 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-// Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
 include("config.php");
+
+require('security_header.php');
+require('security_user.php');
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 

@@ -1,9 +1,14 @@
 <?php
-// Détruire la session de l'utilisateur
-session_start();
-session_unset();
-session_destroy();
+require('security_header.php');
 
-// Rediriger vers la page d'accueil
-header('Location: index.php');
+// Vérification que la clé 'attempts' et 'blocked_until' existent avant de les utiliser
+if (!isset($_SESSION['attempts'][$_SERVER['REMOTE_ADDR']]['blocked_until']) ||
+    $_SESSION['attempts'][$_SERVER['REMOTE_ADDR']]['blocked_until'] <= time()) {
+    // Si la session n'existe pas ou si l'utilisateur n'est pas bloqué
+    session_unset();  // Supprimer toutes les variables de session
+    session_destroy();  // Détruire la session
+    exit();
+}
+
+header('Location: login.php');
 ?>
